@@ -15,8 +15,7 @@ import { Promise } from "core-js";
 
 /* add icons to the library */
 library.add(fas);
-let port = 7184;
-axios.defaults.baseURL = "https://localhost:" + port + "/";
+axios.defaults.baseURL = "https://jonyweaker-001-site1.htempurl.com";
 
 axios.interceptors.response.use(
   function (response) {
