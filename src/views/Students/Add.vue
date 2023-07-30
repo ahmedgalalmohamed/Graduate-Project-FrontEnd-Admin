@@ -2,10 +2,14 @@
   <div class="form-create">
     <div class="row">
       <CToaster placement="top-end">
-        <CToast :color="msgs.state ? 'success' : 'danger'" :key="index"  v-for="(msg,index) in msgs.msg ">
+        <CToast
+          :color="msgs.state ? 'success' : 'danger'"
+          :key="index"
+          v-for="(msg, index) in msgs.msg"
+        >
           <div class="d-flex">
-            <CToastBody class="text-light">{{ msg.msg}}</CToastBody>
-            <CToastClose class="me-2 m-auto"/>
+            <CToastBody class="text-light">{{ msg.msg }}</CToastBody>
+            <CToastClose class="me-2 m-auto" />
           </div>
         </CToast>
       </CToaster>
@@ -24,7 +28,8 @@
                   v-model="student.name"
                   pattern="(([A-Za-z]{3,16})([ ]{0,1})){0,4}([A-Za-z]{3,16})"
                   required
-                  placeholder="Name" />
+                  placeholder="Name"
+                />
               </div>
               <div class="col-3"></div>
               <div class="col-sm-9 text-start">
@@ -45,7 +50,8 @@
                   type="email"
                   pattern="[a-z0-9]+@[a-z]+\.[a-z]{2,3}"
                   required
-                  placeholder="Email" />
+                  placeholder="Email"
+                />
               </div>
               <div class="col-3"></div>
               <div class="col-sm-9 text-start">
@@ -66,7 +72,8 @@
                   type="password"
                   required
                   pattern="[a-zA-Z0-9!@#$%^&*\\/)(+=._-]{8,}"
-                  placeholder="Password" />
+                  placeholder="Password"
+                />
               </div>
               <div class="col-3"></div>
               <div class="col-sm-9 text-start">
@@ -84,7 +91,8 @@
                 <select
                   class="form-select"
                   v-model="student.semester"
-                  aria-label="Default select example">
+                  aria-label="Default select example"
+                >
                   <option selected>1</option>
                   <option v-for="index in 7" :key="index + 1">
                     {{ index + 1 }}
@@ -109,9 +117,8 @@
                   :close-on-select="false"
                   open-direction="bottom"
                   :options="courses.map((type) => type.id)"
-                  :custom-label="
-                    (opt) => courses.find((x) => x.id == opt).name
-                  ">
+                  :custom-label="(opt) => courses.find((x) => x.id == opt).name"
+                >
                 </multiselect>
               </div>
               <div class="col-3"></div>
@@ -128,13 +135,15 @@
                   id="signupbtn"
                   class="btn btn-success mx-1"
                   @click="submit()"
-                  value="Add" />
+                  value="Add"
+                />
                 <input
                   type="button"
                   data-bs-toggle="modal"
                   data-bs-target="#exampleModal"
                   class="btn btn-dark"
-                  value="UploadCSV" />
+                  value="UploadCSV"
+                />
               </div>
             </div>
           </form>
@@ -146,7 +155,8 @@
         id="exampleModal"
         tabindex="-1"
         aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+        aria-hidden="true"
+      >
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
           <div class="modal-content">
             <div class="modal-header">
@@ -155,7 +165,8 @@
                 type="button"
                 class="btn-close"
                 data-bs-dismiss="modal"
-                aria-label="Close"></button>
+                aria-label="Close"
+              ></button>
             </div>
             <div class="modal-body">
               <form class="was-validated" enctype="multipart/form-data">
@@ -167,7 +178,8 @@
                     @change="uploadFile"
                     accept=".csv"
                     ref="file"
-                    id="formFile" />
+                    id="formFile"
+                  />
                 </div>
               </form>
             </div>
@@ -175,14 +187,16 @@
               <button
                 type="button"
                 class="btn btn-secondary"
-                data-bs-dismiss="modal">
+                data-bs-dismiss="modal"
+              >
                 Close
               </button>
               <button
                 type="button"
                 data-bs-dismiss="modal"
                 @click="submitFile()"
-                class="btn btn-primary">
+                class="btn btn-primary"
+              >
                 Save changes
               </button>
             </div>
@@ -197,10 +211,10 @@
 <script>
 import axios from "axios";
 import Multiselect from "vue-multiselect";
-import { CToaster, CToastBody,CToast,CToastClose } from "@coreui/vue";
+import { CToaster, CToastBody, CToast, CToastClose } from "@coreui/vue";
 export default {
   name: "Add",
-  components: { Multiselect, CToaster, CToastBody,CToast,CToastClose },
+  components: { Multiselect, CToaster, CToastBody, CToast, CToastClose },
   data: function () {
     return {
       student: {
@@ -243,7 +257,7 @@ export default {
   },
   beforeCreate() {
     const http = {
-      url: "Course/Display",
+      url: "Course/DisplayCourse",
       data: {},
       method: "GET",
       header: {},
@@ -277,9 +291,11 @@ export default {
           CoursesID: this.student.checkedCourses,
         },
         method: "POST",
-        header: {},
+        header: {
+          "content-type": "application/json"
+        },
       };
-
+      console.log(http);
       axios
         .request({
           url: http.url,
@@ -289,7 +305,7 @@ export default {
         })
         .then((res) => {
           if (res.data) {
-            this.msgs.msg.push({msg:res.data.msg});
+            this.msgs.msg.push({ msg: res.data.msg });
             this.msgs.state = res.data.state;
           }
         })
@@ -313,13 +329,15 @@ export default {
         axios.post("Student/AddCSV", formData, { headers }).then((res) => {
           if (res.data) {
             this.msgs.state = res.data.state;
-            this.msgs.msg.push({msg: "Upload and Add " + res.data.msg + " records"});
+            this.msgs.msg.push({
+              msg: "Upload and Add " + res.data.msg + " records",
+            });
           }
         });
         this.Images = null;
       } else {
         this.msgs.state = false;
-        this.msgs.msg.push({msg: "Not Valid File"});
+        this.msgs.msg.push({ msg: "Not Valid File" });
       }
     },
   },

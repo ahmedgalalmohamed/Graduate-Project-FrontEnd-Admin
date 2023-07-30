@@ -24,6 +24,10 @@ export default {
   background-color: #5697ec;
   border-radius: 20px;
 
+  .img-fluid {
+    max-width: 85%;
+  }
+
   h3 {
     margin: 10px;
     background-color: white;
